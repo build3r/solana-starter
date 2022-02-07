@@ -3,6 +3,13 @@ tasks:
       cargo build
     command: |
       cargo run
+  - init: |
+      sh -c "$(curl -sSfL https://release.solana.com/v1.9.5/install)"
+    command: |
+      solana-install update
+      solana --version
+
+
 
 vscode:
   extensions:

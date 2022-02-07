@@ -1,24 +1,24 @@
 [package]
 name = "solana-starter"
 version = "1.0.0"
-authors = [""]
+authors = ["Shabaz Ahmed <shabaz1729@gmail.com>"]
 edition = "2018"
 readme = "README.md"
 license = "MIT"
 keywords = [ "starter"]
 description = """"""
 
-[workspace]
-members = [
-    "utils",
-    "cli",
-    "core",
-]
-
 [dependencies]
-
+borsh = "0.9.1"
+borsh-derive = "0.9.1"
+solana-program = "1.7.9"
+thiserror = "1.0.24"
+spl-token = {version = "3.1.1", features = ["no-entrypoint"]}
+arrayref = "0.3.6"
 
 [dev-dependencies]
+solana-program-test = "1.7.9"
+solana-sdk = "1.7.9"
 predicates = "1.0.5"
 
 [profile.dev]

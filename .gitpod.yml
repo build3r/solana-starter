@@ -6,6 +6,7 @@ tasks:
   - init: |
       sh -c "$(curl -sSfL https://release.solana.com/v1.9.5/install)"
     command: |
+      source ~/.bash_profile
       solana-install update
       solana --version
 

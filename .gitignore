@@ -6,3 +6,4 @@ custom_config.toml
 .DS_Store
 /target/
 /test-ledger/
+/node_modules/

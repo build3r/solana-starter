@@ -1,12 +1,6 @@
-NOTE! This passphrase improves security of the recovery seed phrase NOT the
-keypair file itself, which is stored as insecure plain text
-
-BIP39 Passphrase (empty for none): 
-
 Wrote new keypair to /home/gitpod/.config/solana/id.json
-===========================================================================
-pubkey: BrEsqoe9yKgUAF2DjLdeHJz1FfZUVHJA6u7f39jwoKNg
-===========================================================================
+=================================================================================
+pubkey: 7JYoZKxNQQE5erchDM8nri2hchLYKwwC4EHzxMUjK8ck
+=================================================================================
 Save this seed phrase and your BIP39 passphrase to recover your new keypair:
-glove luggage collect day alien win equal final situate wide cereal economy
-===========================================================================
+police gather flower educate tomorrow accuse olive submit box still avocado brand

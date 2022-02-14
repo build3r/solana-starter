@@ -1,0 +1,24 @@
+{
+  "name": "crowd_source",
+  "version": "1.0.0",
+  "description": "Solana crowd source prog",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/build3r/solana-starter.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/build3r/solana-starter/issues"
+  },
+  "homepage": "https://github.com/build3r/solana-starter#readme",
+  "dependencies": {
+    "@solana/web3.js": "^1.34.0",
+    "mz": "^2.7.0",
+    "npm": "^8.5.0"
+  }
+}

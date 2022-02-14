@@ -1,5 +1,7 @@
-use solana_program::log::sol_log_compute_units;
 use borsh::{BorshDeserialize, BorshSerialize};
+use std::collections::HashMap;
+use std::convert::TryInto;
+
 use solana_program::{
     account_info::{next_account_info, AccountInfo},
     entrypoint,
@@ -9,104 +11,61 @@ use solana_program::{
     pubkey::Pubkey,
 };
 
-/// Define the type of state stored in accounts
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
-pub struct GreetingAccount {
-    /// number of greetings
-    pub text: String,
+pub struct CampaignAccount {
+    pub campaign_owner: Pubkey,
+    pub campaign_amount: u64,
+    pub campaign_description: String,
+    pub campaign_fulfilled: u64,
 }
 
-// Declare and export the program's entrypoint
 entrypoint!(process_instruction);
 
-// Program entrypoint's implementation
 pub fn process_instruction(
-    program_id: &Pubkey, // Public key of the account the hello world program was loaded into
-    accounts: &[AccountInfo], // The account to say hello to
-    instruction_data: &[u8], // Ignored, all helloworld instructions are hellos
+    program_id: &Pubkey, 
+    accounts: &[AccountInfo], 
+    data: &[u8], 
 ) -> ProgramResult {
-    msg!("Hello World Rust program entrypoint");
 
-    // Iterating accounts is safer then indexing
     let accounts_iter = &mut accounts.iter();
+    let campaign_account = next_account_info(accounts_iter)?;
 
-    // Get the account to say hello to
-    let account = next_account_info(accounts_iter)?;
+    let (instruction_byte, rest_of_data) = data.split_first().unwrap();
 
-    // The account must be owned by the program in order to modify its data
-    if account.owner != program_id {
-        msg!("Greeted account does not have the correct program id");
-        return Err(ProgramError::IncorrectProgramId);
+    let amount = rest_of_data
+      .get(..8)
+      .and_then(|slice| slice.try_into().ok())
+      .map(u64::from_le_bytes)
+      .unwrap();
+      
+    let description = String::from_utf8(rest_of_data[9..].to_vec()).unwrap();      
+
+    if *instruction_byte == 0 {
+      let campaign_owner_account = next_account_info(accounts_iter)?;
+      let mut campaign_account_data = CampaignAccount::try_from_slice(&campaign_account.data.borrow())?;
+      campaign_account_data.campaign_owner = *campaign_owner_account.owner;
+      campaign_account_data.campaign_amount = amount;
+      campaign_account_data.campaign_description = description;
+      campaign_account_data.campaign_fulfilled = 0;
+      campaign_account_data.serialize(&mut &mut campaign_account.data.borrow_mut()[..])?;
     }
 
-    msg!("Starting to decode");
-    // Increment and store the number of times the account has been greeted
-    let mut greeting_account = GreetingAccount::try_from_slice(instruction_data)
-    .map_err(|err| {
-    msg!("Error to decoding {:?}", err);
-    ProgramError::InvalidInstructionData
-    })?;
-    msg!("Passed Message = {}", greeting_account.text);
+    if *instruction_byte == 1 {
+      //get campaign status 
 
-    let data_to_save = &mut &mut account.data.borrow_mut();
-    msg!("instruction_data.len() = {}", instruction_data.len());
-    msg!("data_to_save.len() = {}", instruction_data.len());
+      let mut campaign_account_data = CampaignAccount::try_from_slice(&campaign_account.data.borrow())?;
+      msg!("{}",campaign_account_data.campaign_amount - campaign_account_data.campaign_fulfilled);
 
-    data_to_save[..instruction_data.len()].copy_from_slice(&instruction_data);
-    // greeting_account.serialize(&mut &mut account.data.borrow_mut()[..])?;
+    }
 
-    msg!("Data was saved {}!", greeting_account.text);
-    sol_log_compute_units();
+    if *instruction_byte == 2 {
+
+    }
+
+    if *instruction_byte == 3 {
+
+    }
+    
+
     Ok(())
-}
-
-// Sanity tests
-#[cfg(test)]
-mod test {
-    use super::*;
-    use solana_program::clock::Epoch;
-    use std::mem;
-
-    #[test]
-    fn test_sanity() {
-        let program_id = Pubkey::default();
-        let key = Pubkey::default();
-        let mut lamports = 0;
-        let mut data = vec![0; mem::size_of::<u32>()];
-        let owner = Pubkey::default();
-        let account = AccountInfo::new(
-            &key,
-            false,
-            true,
-            &mut lamports,
-            &mut data,
-            &owner,
-            false,
-            Epoch::default(),
-        );
-        let instruction_data: Vec<u8> = Vec::new();
-
-        let accounts = vec![account];
-
-        // assert_eq!(
-        //     GreetingAccount::try_from_slice(&accounts[0].data.borrow())
-        //         .unwrap()
-        //         .counter,
-        //     0
-        // );
-        process_instruction(&program_id, &accounts, &instruction_data).unwrap();
-        // assert_eq!(
-        //     GreetingAccount::try_from_slice(&accounts[0].data.borrow())
-        //         .unwrap()
-        //         .counter,
-        //     1
-        // );
-        process_instruction(&program_id, &accounts, &instruction_data).unwrap();
-        // assert_eq!(
-        //     GreetingAccount::try_from_slice(&accounts[0].data.borrow())
-        //         .unwrap()
-        //         .counter,
-        //     2
-        // );
-    }
 }

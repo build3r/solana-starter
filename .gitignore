@@ -7,3 +7,4 @@ custom_config.toml
 /target/
 /test-ledger/
 /node_modules/
+/anchor/

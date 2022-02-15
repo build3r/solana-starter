@@ -13,7 +13,8 @@ RUN rustup --version
 # Build the project
 RUN cargo build --release
 
-
+RUN sh -c "$(curl -sSfL https://release.solana.com/v1.9.5/install)"
+ENV PATH="/home/gitpod/.local/share/solana/install/active_release/bin:$PATH"
 
 FROM alpine:latest
 RUN apk --no-cache add ca-certificates

@@ -1,4 +1,5 @@
 #!/bin/bash
+export PATH="/home/gitpod/.local/share/solana/install/active_release/bin:$PATH"
 
 package_name := `sed -En 's/name[[:space:]]*=[[:space:]]*"([^"]+)"/\1/p' Cargo.toml | head -1`
 package_version := `sed -En 's/version[[:space:]]*=[[:space:]]*"([^"]+)"/\1/p' Cargo.toml | head -1`
